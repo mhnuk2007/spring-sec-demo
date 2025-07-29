@@ -7,6 +7,10 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -14,15 +18,32 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(customizer->customizer.disable());
-        http.authorizeHttpRequests(request->request.anyRequest().authenticated());
-        http.formLogin(Customizer.withDefaults());
-        http.httpBasic(Customizer.withDefaults());
-        http.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-
-
+        http.csrf(customizer -> customizer.disable())
+                .authorizeHttpRequests(request -> request.anyRequest().authenticated())
+                //.formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User
+                .withDefaultPasswordEncoder()
+                .username("honey")
+                .password("123456")
+                .roles("USER")
+                .build();
+
+        UserDetails admin = User
+                .withDefaultPasswordEncoder()
+                .username("admin")
+                .password("1234")
+                .roles("ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
+    }
+
 }
