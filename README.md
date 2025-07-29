@@ -35,5 +35,17 @@ spring-sec-demo/
 └── README.md
 ```
 
+## Security Configuration
+
+This project uses Spring Security with the following features:
+- Stateless session management (`SessionCreationPolicy.STATELESS`)
+- CSRF protection disabled for APIs
+- HTTP Basic authentication enabled
+- In-memory users for testing:
+    - Username: `honey`, Password: `123456`, Role: `USER`
+    - Username: `admin`, Password: `1234`, Role: `ADMIN`
+
+To access secured endpoints, use one of the above credentials.
+
 ## License
 This project is licensed under the MIT License.
