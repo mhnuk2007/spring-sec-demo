@@ -74,6 +74,27 @@ spring.datasource.password=0000
 - **Passwords are stored in plain text for demo purposes.** For production, use a password encoder like BCrypt.
 - To add roles or authorities, extend the `User` entity and update `UserPrincipal` accordingly.
 
+## Password Security Update
+
+- As of the latest version, **all user passwords are securely hashed using BCrypt** before being saved to the database.
+- The authentication provider is also configured to use BCrypt, ensuring passwords are always checked securely.
+- **Plain-text passwords are no longer accepted or stored anywhere in the application.**
+
+### Registration Flow
+- When registering a new user, the password is hashed with BCrypt (version `$2Y`, strength 12).
+- During login, the provided password is checked against the stored hash using BCrypt.
+
+### Why BCrypt?
+- BCrypt is the industry standard for password hashing, providing strong protection against brute-force and rainbow table attacks.
+- Always use hashed passwords in production systems.
+
+### Example (for verification)
+- When a user registers, the hashed password will be output to the console (for debug/testing only).
+
+---
+
+All other security and usage instructions remain the same, but your application is now **production-ready for password security**.
+
 ## Usage
 
 - Start the application and access any endpoint. You will be prompted for HTTP Basic credentials.
