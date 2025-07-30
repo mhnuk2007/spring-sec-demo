@@ -97,6 +97,27 @@ spring.datasource.password=0000
    ```
    You should receive a response if authentication succeeds, or a 401 error if it fails.
 
+## User Management & Registration
+
+- The project includes a `UserController` and `UserService` for user-related operations.
+- To add user registration, POST to the appropriate endpoint (see `UserController`).
+- **Important:** When adding registration, ensure passwords are encoded before saving to the database. For demo purposes, plain text passwords may be accepted, but for production use a secure encoder (e.g., BCrypt).
+
+## Example Registration Request
+
+```
+POST /register
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "newpassword"
+}
+```
+
+- The registration endpoint should validate input and handle duplicate usernames appropriately.
+- After registration, the new user can log in using HTTP Basic Auth with the provided credentials.
+
 ## Future Improvements
 - Use `BCryptPasswordEncoder` and store hashed passwords for security.
 - Add user registration and password reset endpoints.
