@@ -1,4 +1,4 @@
-package com.learning.springsecdemo;
+package com.learning.springsecdemo.controller;
 
 import com.learning.springsecdemo.model.Student;
 import jakarta.servlet.http.HttpServletRequest;
