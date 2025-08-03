@@ -1,6 +1,7 @@
 package com.learning.springsecdemo.controller;
 
 import com.learning.springsecdemo.model.User;
+import com.learning.springsecdemo.service.JwtService;
 import com.learning.springsecdemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtService jwtService;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -31,7 +35,7 @@ public class UserController {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         if(authentication.isAuthenticated()){
-            return generateToken(user.getUsername());
+            return jwtService.generateToken(user.getUsername());
         } else {
             return "Login failed";
         }
