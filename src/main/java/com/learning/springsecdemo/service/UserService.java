@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     @Autowired
     private UserRepo repo;
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2Y, 12);
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public User saveUser(User user){
         user.setPassword(encoder.encode(user.getPassword()));
