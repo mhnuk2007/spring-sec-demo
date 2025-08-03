@@ -1,149 +1,99 @@
 # spring-sec-demo
 
-A demo Spring Boot project showcasing basic Spring Security integration.
+A Spring Boot 3.5.x demo showcasing Spring Security with JWT authentication, PostgreSQL integration, and secure password handling.
 
-## Features
-- Spring Boot application structure
-- Basic Spring Security setup
-- Example REST controller
+## 🚀 Features
 
-## Getting Started
+- ✅ Spring Boot REST API
+- ✅ JWT-based stateless authentication
+- ✅ Spring Security integration
+- ✅ BCrypt password hashing
+- ✅ PostgreSQL database integration
+- ✅ Role-based authority setup (default `USER`)
+- ✅ Example endpoints: `/hello`, `/students`, `/register`, `/login`
 
-### Prerequisites
+## 🧰 Prerequisites
+
 - Java 17 or later
 - Maven 3.6+
+- PostgreSQL (configured in `application.properties`)
 
-### Build & Run
+## 📦 Build & Run
+
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
 
-The application will start on [http://localhost:8080](http://localhost:8080).
+## 🗃️ Project Structure
 
-## Project Structure
 ```
 spring-sec-demo/
-├── src/main/java/com/learning/springsecdemo/
-│   ├── HelloController.java
-│   └── SpringSecDemoApplication.java
-├── src/main/resources/
-│   ├── application.properties
-│   ├── static/
-│   └── templates/
+├── controller/
+├── config/
+├── model/
+├── service/
+├── dao/
+├── application.properties
 ├── pom.xml
 └── README.md
 ```
 
-## Security Configuration
+## 🔐 Security Setup
 
-This project uses Spring Security with the following features:
-- Custom `UserDetailsService` backed by a PostgreSQL database.
-- User entity (`User`) mapped to a `users` table with fields: `id`, `username`, `password`.
-- All endpoints require authentication (HTTP Basic, stateless sessions).
-- Example implementation of `UserPrincipal` for Spring Security integration.
-- Minimal role support: all users are granted the `USER` role by default.
+- Uses Spring Security with a custom `UserDetailsService`
+- Passwords are hashed using BCrypt (strength 12)
+- Stateless JWT authentication configured with a custom filter
+- JWT is signed using HMAC-SHA256 with a dynamically generated secret key
 
-### Database Setup
-
-Ensure you have a PostgreSQL database running and a `users` table with at least one user. Example schema:
+## 📦 Database Setup
 
 ```sql
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL
 );
 ```
 
-Insert a user (for testing, passwords are stored in plain text):
-```sql
-INSERT INTO users (username, password) VALUES ('honey', '1234');
-```
-
-### Configuration
-
-Edit `src/main/resources/application.properties` to match your PostgreSQL settings:
-```
-spring.datasource.url=jdbc:postgresql://localhost:5432/springsecdemo
-spring.datasource.username=postgres
-spring.datasource.password=0000
-```
-
-### Notes
-- **Passwords are stored in plain text for demo purposes.** For production, use a password encoder like BCrypt.
-- To add roles or authorities, extend the `User` entity and update `UserPrincipal` accordingly.
-
-## Password Security Update
-
-- As of the latest version, **all user passwords are securely hashed using BCrypt** before being saved to the database.
-- The authentication provider is also configured to use BCrypt, ensuring passwords are always checked securely.
-- **Plain-text passwords are no longer accepted or stored anywhere in the application.**
-
-### Registration Flow
-- When registering a new user, the password is hashed with BCrypt (version `$2Y`, strength 12).
-- During login, the provided password is checked against the stored hash using BCrypt.
-
-### Why BCrypt?
-- BCrypt is the industry standard for password hashing, providing strong protection against brute-force and rainbow table attacks.
-- Always use hashed passwords in production systems.
-
-### Example (for verification)
-- When a user registers, the hashed password will be output to the console (for debug/testing only).
-
----
-
-All other security and usage instructions remain the same, but your application is now **production-ready for password security**.
-
-## Usage
-
-- Start the application and access any endpoint. You will be prompted for HTTP Basic credentials.
-- Use a username/password from your database (e.g., `honey` / `1234`).
-
-## Troubleshooting
-
-- **UserDetailsService bean not found:**
-  Ensure `MyUserDetailsService` is annotated with `@Service` and your package structure is covered by component scanning.
-- **Cannot connect to database:**
-  Double-check your PostgreSQL credentials and that the database is running.
-- **Authentication fails:**
-  Ensure your `users` table has at least one user and passwords match what is stored (plain text for demo).
-
-## How to Test Authentication
-
-1. Start the application.
-2. Use a tool like curl or Postman to make a request to any endpoint:
-   ```bash
-   curl -u honey:1234 http://localhost:8080/your-endpoint
-   ```
-   You should receive a response if authentication succeeds, or a 401 error if it fails.
-
-## User Management & Registration
-
-- The project includes a `UserController` and `UserService` for user-related operations.
-- To add user registration, POST to the appropriate endpoint (see `UserController`).
-- **Important:** When adding registration, ensure passwords are encoded before saving to the database. For demo purposes, plain text passwords may be accepted, but for production use a secure encoder (e.g., BCrypt).
-
-## Example Registration Request
+### Example User Insert (hashed password auto-generated on registration)
 
 ```
 POST /register
 Content-Type: application/json
 
 {
-  "username": "newuser",
-  "password": "newpassword"
+  "username": "honey",
+  "password": "1234"
 }
 ```
 
-- The registration endpoint should validate input and handle duplicate usernames appropriately.
-- After registration, the new user can log in using HTTP Basic Auth with the provided credentials.
+## ✅ Authentication
 
-## Future Improvements
-- Use `BCryptPasswordEncoder` and store hashed passwords for security.
-- Add user registration and password reset endpoints.
-- Support multiple roles/authorities per user.
-- Implement JWT-based authentication for stateless APIs.
+- Register using `/register` endpoint
+- Login using `/login` to receive a JWT token
+- Use the token in `Authorization` header for secured endpoints
 
-## License
-This project is licensed under the MIT License.
+```bash
+curl -H "Authorization: Bearer <your_token>" http://localhost:8080/hello
+```
+
+## 🛠️ Troubleshooting
+
+- Ensure PostgreSQL is running and credentials match
+- Passwords are encrypted—plaintext login won’t work unless hashed properly
+- For CSRF token: call `/csrf-token` if enabled in future stateful security mode
+
+## 🔐 Password Security
+
+- Passwords are never stored or transmitted in plain text
+- BCrypt encoder used with Spring Security configuration
+
+## 📌 Notes
+
+- Extend role/authority setup as needed using User and UserPrincipal
+- Secret key is generated at runtime for demo purposes (you can persist it in production)
+
+## 📄 License
+
+MIT License.
